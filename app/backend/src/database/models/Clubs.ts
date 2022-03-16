@@ -11,13 +11,9 @@ class Clubs extends Model {
 Clubs.init({
   id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    autoIncrement: true,
-    primaryKey: true,
   },
   clubName: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
 }, {
   underscored: true,

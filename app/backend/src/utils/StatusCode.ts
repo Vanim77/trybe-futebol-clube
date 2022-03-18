@@ -3,6 +3,7 @@ enum StatusCode {
   Created,
   BadRequest = 400,
   Unauthorized,
+  NotFound = 404,
   UnprocessableEntity = 422,
 }
 

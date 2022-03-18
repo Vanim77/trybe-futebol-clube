@@ -1,5 +1,5 @@
 import * as express from 'express';
-import router from './routes';
+import routes from './routes';
 
 class App {
   public app: express.Express;
@@ -19,7 +19,7 @@ class App {
     };
 
     this.app.use(accessControl);
-    this.app.use(router);
+    this.app.use(routes);
   }
 
   public start(PORT: string | number):void {

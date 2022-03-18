@@ -8,14 +8,15 @@ class Users extends Model {
 
   public role: string;
 
-  private email: string;
+  public email: string;
 
-  private password: string;
+  public password: string;
 }
 
 Users.init({
   id: {
     type: DataTypes.INTEGER,
+    primaryKey: true,
   },
   username: {
     type: DataTypes.STRING,

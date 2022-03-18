@@ -18,6 +18,7 @@ class Matchs extends Model {
 Matchs.init({
   id: {
     type: DataTypes.INTEGER,
+    primaryKey: true,
   },
   homeTeam: {
     type: DataTypes.INTEGER,

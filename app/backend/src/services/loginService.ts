@@ -7,7 +7,7 @@ export interface ILogin {
   password: string,
 }
 
-const LoginService = async ({ email, password }: ILogin) => {
+const login = async ({ email, password }: ILogin) => {
   const token = auth(email);
 
   const user = await Users.findOne({ where: { email } });
@@ -29,4 +29,15 @@ const LoginService = async ({ email, password }: ILogin) => {
   };
 };
 
-export default LoginService;
+const checkLoginRole = async (email: string) => {
+  const user = await Users.findOne({ where: { email } });
+
+  if (!user) { return { message: 'Bad Request' }; }
+
+  return { role: user.role };
+};
+
+export default {
+  login,
+  checkLoginRole,
+};

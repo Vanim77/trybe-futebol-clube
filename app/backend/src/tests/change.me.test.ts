@@ -1,44 +1,66 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
+import * as jwt from 'jsonwebtoken';
 import chaiHttp = require('chai-http');
-
-import { app } from '../app';
-import Example from '../database/models/ExampleModel';
-
 import { Response } from 'superagent';
+import { app } from '../app';
+import Users from '../database/models/Users';
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('Seu teste', () => {
-  /**
-   * Exemplo do uso de stubs com tipos
-   */
+let ChaiHttpResponse: Response;
 
-  // let chaiHttpResponse: Response;
+const loginSucess = {
+  user: {
+    id: 77,
+    username: 'vanim77',
+    role: 'atacante',
+    email: 'vanim77@gmail.com'
+  },
+  token: '@abcdefgh0987654321@'
+}
 
-  // before(async () => {
-  //   sinon
-  //     .stub(Example, "findOne")
-  //     .resolves({
-  //       ...<Seu mock>
-  //     } as Example);
-  // });
+const token = '@abcdefgh0987654321@';
 
-  // after(()=>{
-  //   (Example.findOne as sinon.SinonStub).restore();
-  // })
+describe('Testa a rota POST /login', () => {
+  before(async () => {
+    ChaiHttpResponse = await chai.request(app)
+    .post('/login')
+    .send({ email: 'vanim77@gmail.com', password: '123456789' })
 
-  // it('...', async () => {
-  //   chaiHttpResponse = await chai
-  //      .request(app)
-  //      ...
+    sinon.stub(Users, 'findOne')
+      .resolves({
+        id: 77,
+        username: 'vanim77',
+        role: 'atacante',
+        email: 'vanim77@gmail.com',
+        password: '123456789'
+      } as Users)
 
-  //   expect(...)
-  // });
+    sinon.stub(jwt, 'sign')
+      .resolves(token)
+  })
 
-  it('Seu sub-teste', () => {
-    expect(false).to.be.eq(true);
-  });
-});
+  after(async () => {
+    sinon.stub(Users, 'findOne').restore();
+    sinon.stub(jwt, 'sign').restore();
+  })
+
+  it(`Deve retornar um objeto com as propriedades esperadas
+   quando a requisição é feita com dados válidos`, async () => {
+    console.log(ChaiHttpResponse);
+    expect(ChaiHttpResponse).to.have.status(200);
+    expect(ChaiHttpResponse.body).to.have.a.property('user');
+    expect(ChaiHttpResponse.body.user).to.have.a.property('id');
+    expect(ChaiHttpResponse.body.user).to.have.a.property('username');
+    expect(ChaiHttpResponse.body.user).to.have.a.property('role');
+    expect(ChaiHttpResponse.body.user).to.have.a.property('email');
+    expect(ChaiHttpResponse.body).to.have.a.property('token');
+  })
+})
+
+// describe('Testa a rota GET /login/validate', () => {
+//   chai.request(app).get('/login/validate')
+// })

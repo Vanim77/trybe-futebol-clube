@@ -1,6 +1,7 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
 import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcryptjs';
 import chaiHttp = require('chai-http');
 import { Response } from 'superagent';
 import { app } from '../app';
@@ -26,10 +27,6 @@ const token = '@abcdefgh0987654321@';
 
 describe('Testa a rota POST /login', () => {
   before(async () => {
-    ChaiHttpResponse = await chai.request(app)
-    .post('/login')
-    .send({ email: 'vanim77@gmail.com', password: '123456789' })
-
     sinon.stub(Users, 'findOne')
       .resolves({
         id: 77,
@@ -50,7 +47,10 @@ describe('Testa a rota POST /login', () => {
 
   it(`Deve retornar um objeto com as propriedades esperadas
    quando a requisição é feita com dados válidos`, async () => {
-    console.log(ChaiHttpResponse);
+    ChaiHttpResponse = await chai.request(app)
+    .post('/login')
+    .send({ email: 'vanim77@gmail.com', password: '123456789' })
+
     expect(ChaiHttpResponse).to.have.status(200);
     expect(ChaiHttpResponse.body).to.have.a.property('user');
     expect(ChaiHttpResponse.body.user).to.have.a.property('id');

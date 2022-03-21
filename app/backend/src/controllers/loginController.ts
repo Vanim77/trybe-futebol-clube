@@ -7,6 +7,8 @@ const login = async (req: Request, res: Response) => {
 
   const response = await LoginService.login({ email, password });
 
+  console.log(response);
+
   if (!response.user) {
     return res.status(StatusCode.Unauthorized).json(response);
   }

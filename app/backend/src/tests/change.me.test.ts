@@ -43,9 +43,9 @@ describe('Testa a rota POST /login', () => {
       .resolves(token)
   })
 
-  after(async () => {
-    sinon.stub(Users, 'findOne').restore();
-    sinon.stub(jwt, 'sign').restore();
+  after(() => {
+    (Users.findOne as sinon.SinonStub).restore();
+    (jwt.sign as sinon.SinonStub).restore();
   })
 
   it(`Deve retornar um objeto com as propriedades esperadas

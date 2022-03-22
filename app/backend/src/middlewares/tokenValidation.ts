@@ -20,7 +20,7 @@ const tokenValidation = async (req: Request, res: Response, next: NextFunction) 
   }
 
   try {
-    const payload = verify(token, secret) as JwtPayload;
+    const payload = await verify(token, secret) as JwtPayload;
 
     req.body.email = payload.data.email;
 

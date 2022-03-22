@@ -2,6 +2,7 @@ import * as sinon from 'sinon';
 import * as chai from 'chai';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
+import * as fs from 'fs';
 import chaiHttp = require('chai-http');
 import { Response } from 'superagent';
 import { app } from '../app';
@@ -98,6 +99,35 @@ describe('Testa as validações da rota POST /login em caso de erro', () => {
   })
 });
 
-// describe('Testa a rota GET /login/validate', () => {
-//   chai.request(app).get('/login/validate')
-// })
+describe.only('Testa a rota GET /login/validate', () => {
+  before(async () => {
+    sinon.stub(fs, 'readFileSync')
+      .resolves('super_senha')
+
+    sinon.stub(jwt, 'verify')
+      .resolves({ data: { email: 'teste@gmail.com' }, iat: 123456, exp: 123456 })
+
+    sinon.stub(Users, 'findOne')
+      .resolves({
+        id: 77,
+        username: 'vanim77',
+        role: 'atacante',
+        email: 'vanim77@gmail.com',
+        password: '123456789'
+      } as Users)
+  })
+  
+  after(() => {
+    (fs.readFileSync as sinon.SinonStub).restore();
+    (jwt.verify as sinon.SinonStub).restore();
+    (Users.findOne as sinon.SinonStub).restore();
+  })
+  
+  it('Deve retornar a role esperada em caso de sucesso', async () => {
+    ChaiHttpResponse = await chai.request(app)
+      .get('/login/validate')
+      .set('authorization', token)
+
+    expect(ChaiHttpResponse.body).to.be.eq('atacante')
+  })
+})

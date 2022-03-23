@@ -99,7 +99,7 @@ describe('Testa as validações da rota POST /login em caso de erro', () => {
   })
 });
 
-describe.only('Testa a rota GET /login/validate', () => {
+describe('Testa a rota GET /login/validate em caso de sucesso', () => {
   before(async () => {
     sinon.stub(fs, 'readFileSync')
       .resolves('super_senha')
@@ -123,11 +123,59 @@ describe.only('Testa a rota GET /login/validate', () => {
     (Users.findOne as sinon.SinonStub).restore();
   })
   
-  it('Deve retornar a role esperada em caso de sucesso', async () => {
+  it('Deve retornar a role esperada', async () => {
     ChaiHttpResponse = await chai.request(app)
       .get('/login/validate')
       .set('authorization', token)
 
     expect(ChaiHttpResponse.body).to.be.eq('atacante')
+  })
+})
+
+describe.only('Testa a rota GET /login/validate em caso de falha', () => {
+  it('Deve retornar a mensagem "Token not found" caso não passe um token', async () => {
+    ChaiHttpResponse = await chai.request(app)
+      .get('/login/validate')
+
+    expect(ChaiHttpResponse).to.have.a.property('status');
+    expect(ChaiHttpResponse.status).to.be.eq(404);
+    expect(ChaiHttpResponse.body).to.have.a.property('error')
+    expect(ChaiHttpResponse.body.error).to.be.eq('Token not found');
+  })
+
+  it('Deve retornar a mensagem "Invalid token" caso o token fornecido seja inválido', async () => {
+    ChaiHttpResponse = await chai.request(app)
+      .get('/login/validate')
+      .set('authorization', 'T0K3N1NV4L1D0');
+    
+    sinon.stub(jwt, 'verify')
+      .resolves(new Error)
+
+    expect(ChaiHttpResponse).to.have.a.property('status');
+    expect(ChaiHttpResponse.status).to.be.eq(401);
+    expect(ChaiHttpResponse.body).to.have.a.property('error')
+    expect(ChaiHttpResponse.body.error).to.be.eq('Invalid token');
+
+    (jwt.verify as sinon.SinonStub).restore();
+  })
+
+  it('Deve retornar a mensagem "Bad Request" caso o usuário não exista no banco de dados', async () => {
+    sinon.stub(jwt, 'verify')
+      .resolves({ data: { email: 'teste@gmail.com' }, iat: 123456, exp: 123456 })
+
+    sinon.stub(Users, 'findOne')
+    .resolves(undefined)
+
+    ChaiHttpResponse = await chai.request(app)
+      .get('/login/validate')
+      .set('authorization', token)
+
+    expect(ChaiHttpResponse).to.have.a.property('status');
+    expect(ChaiHttpResponse.status).to.be.eq(401);
+    expect(ChaiHttpResponse.body).to.have.a.property('message')
+    expect(ChaiHttpResponse.body.message).to.be.eq('Bad Request');
+
+    (jwt.verify as sinon.SinonStub).restore();
+    (Users.findOne as sinon.SinonStub).restore();
   })
 })

@@ -7,6 +7,8 @@ import chaiHttp = require('chai-http');
 import { Response } from 'superagent';
 import { app } from '../app';
 import Users from '../database/models/Users';
+import { allClubs } from './mocks';
+import Clubs from '../database/models/Clubs';
 
 chai.use(chaiHttp);
 
@@ -132,7 +134,7 @@ describe('Testa a rota GET /login/validate em caso de sucesso', () => {
   })
 })
 
-describe.only('Testa a rota GET /login/validate em caso de falha', () => {
+describe('Testa a rota GET /login/validate em caso de falha', () => {
   it('Deve retornar a mensagem "Token not found" caso não passe um token', async () => {
     ChaiHttpResponse = await chai.request(app)
       .get('/login/validate')
@@ -177,5 +179,29 @@ describe.only('Testa a rota GET /login/validate em caso de falha', () => {
 
     (jwt.verify as sinon.SinonStub).restore();
     (Users.findOne as sinon.SinonStub).restore();
+  })
+})
+
+describe('Testa a rota GET /clubs', () => {
+  before(async () => {
+    sinon.stub(Clubs, 'findAll')
+      .resolves(allClubs as Clubs[])
+  })
+
+  after(() => {
+    (Clubs.findAll as sinon.SinonStub).restore();
+  })
+
+  it('Deve retornar todos os clubes', async () => {
+
+    ChaiHttpResponse = await chai.request(app)
+      .get('/clubs')
+
+    expect(ChaiHttpResponse).to.have.a.property('status');
+    expect(ChaiHttpResponse.status).to.be.eq(200);
+    expect(ChaiHttpResponse.body).to.be.an('array')
+    expect(ChaiHttpResponse.body).to.have.length(5);
+    expect(ChaiHttpResponse.body[0]).to.have.a.property('id')
+    expect(ChaiHttpResponse.body[0]).to.have.a.property('clubName')
   })
 })

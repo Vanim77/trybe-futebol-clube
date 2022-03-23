@@ -205,3 +205,49 @@ describe('Testa a rota GET /clubs', () => {
     expect(ChaiHttpResponse.body[0]).to.have.a.property('clubName')
   })
 })
+
+describe('Testa a rota GET /clubs/:id em caso de sucesso', () => {
+  before(async () => {
+    sinon.stub(Clubs, 'findOne')
+      .resolves(allClubs[0] as Clubs)
+  })
+
+  after(() => {
+    (Clubs.findOne as sinon.SinonStub).restore();
+  })
+
+  it('Deve retornar um clube específico em caso de sucesso', async () => {
+
+    ChaiHttpResponse = await chai.request(app)
+    .get('/clubs/:id')
+
+    expect(ChaiHttpResponse).to.have.a.property('status');
+    expect(ChaiHttpResponse.status).to.be.eq(200);
+    expect(ChaiHttpResponse.body).to.have.a.property('id')
+    expect(ChaiHttpResponse.body).to.have.a.property('clubName')
+    expect(ChaiHttpResponse.body.id).to.be.eq(1);
+    expect(ChaiHttpResponse.body.clubName).to.be.eq('Avaí/Kindermann');
+  })
+})
+
+describe('Testa a rota GET /clubs/:id em caso de falha', () => {
+  before(async () => {
+    sinon.stub(Clubs, 'findOne')
+      .resolves(undefined)
+  })
+
+  after(() => {
+    (Clubs.findOne as sinon.SinonStub).restore();
+  })
+
+  it('Deve retornar um clube específico em caso de sucesso', async () => {
+
+    ChaiHttpResponse = await chai.request(app)
+    .get('/clubs/:id')
+
+    expect(ChaiHttpResponse).to.have.a.property('status');
+    expect(ChaiHttpResponse.status).to.be.eq(400);
+    expect(ChaiHttpResponse.body).to.have.a.property('message')
+    expect(ChaiHttpResponse.body.message).to.be.eq('Bad Request')
+  })
+})

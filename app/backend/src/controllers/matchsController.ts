@@ -15,6 +15,27 @@ const getAll = async (req: Request, res: Response) => {
   return res.status(StatusCode.OK).json(response);
 };
 
+const createInProgressMatch = async (req: Request, res: Response) => {
+  const newMatch = req.body;
+  const response = await MatchsService.create(newMatch);
+
+  if (!response.homeTeamGoals) {
+    return res.status(StatusCode.Unauthorized).json(response);
+  }
+
+  return res.status(StatusCode.Created).json(response);
+};
+
+const updateMatch = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  await MatchsService.updateMatch(Number(id));
+
+  return res.status(StatusCode.OK).json({ message: 'Resource updated successfully' });
+};
+
 export default {
   getAll,
+  createInProgressMatch,
+  updateMatch,
 };

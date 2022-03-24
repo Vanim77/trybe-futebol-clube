@@ -7,8 +7,9 @@ import chaiHttp = require('chai-http');
 import { Response } from 'superagent';
 import { app } from '../app';
 import Users from '../database/models/Users';
-import { allClubs } from './mocks';
+import { allClubs, allMatchs } from './mocks';
 import Clubs from '../database/models/Clubs';
+import Matchs from '../database/models/Matchs';
 
 chai.use(chaiHttp);
 
@@ -249,5 +250,51 @@ describe('Testa a rota GET /clubs/:id em caso de falha', () => {
     expect(ChaiHttpResponse.status).to.be.eq(400);
     expect(ChaiHttpResponse.body).to.have.a.property('message')
     expect(ChaiHttpResponse.body.message).to.be.eq('Bad Request')
+  })
+})
+
+describe('Testa a rota GET /matchs em caso de sucesso', () => {
+  before(async () => {
+    sinon.stub(Matchs, 'findAll')
+      .resolves(allMatchs as unknown as Matchs[])
+  })
+
+  after(() => {
+    (Matchs.findAll as sinon.SinonStub).restore();
+  });
+
+  it('Deve retornar todos os matchs quando acessa a rota sem filtros', async () => {
+    ChaiHttpResponse = await chai.request(app)
+    .get('/matchs')
+
+    expect(ChaiHttpResponse.body).to.be.an('array');
+    expect(ChaiHttpResponse.body[0]).to.have.a.property('homeTeamGoals');
+    expect(ChaiHttpResponse.body[0]).to.have.a.property('awayTeamGoals');
+    expect(ChaiHttpResponse.body[0]).to.have.a.property('homeClub');
+    expect(ChaiHttpResponse.body[0]).to.have.a.property('awayClub');
+    expect(ChaiHttpResponse.body).to.have.length(allMatchs.length);
+  })
+})
+
+describe('Testa a rota GET /matchs?inProgress em caso de sucesso', () => {
+  before(async () => {
+    sinon.stub(Matchs, 'findAll')
+      .resolves(allMatchs[0] as unknown as Matchs[])
+  })
+
+  after(() => {
+    (Matchs.findAll as sinon.SinonStub).restore();
+  });
+
+  it(`Deve retornar apenas os matchs que estão ativos
+    quando acessa a rota filtrando`, async () => {
+      ChaiHttpResponse = await chai.request(app)
+    .get('/matchs?inProgress=true')
+
+    expect(ChaiHttpResponse.body).to.have.a.property('homeTeamGoals');
+    expect(ChaiHttpResponse.body).to.have.a.property('awayTeamGoals');
+    expect(ChaiHttpResponse.body).to.have.a.property('homeClub');
+    expect(ChaiHttpResponse.body).to.have.a.property('awayClub');
+    expect(ChaiHttpResponse.body.homeTeamGoals).to.be.eq(1);
   })
 })

@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as cors from 'cors';
 import routes from './routes';
 
 class App {
@@ -6,6 +7,7 @@ class App {
 
   constructor() {
     this.app = express();
+    this.app.use(cors());
     this.app.use(express.json());
     this.config();
   }

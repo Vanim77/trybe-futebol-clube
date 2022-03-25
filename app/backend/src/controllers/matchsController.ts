@@ -34,8 +34,18 @@ const updateMatch = async (req: Request, res: Response) => {
   return res.status(StatusCode.OK).json({ message: 'Resource updated successfully' });
 };
 
+const updateGoals = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { homeTeamGoals, awayTeamGoals } = req.body;
+
+  await MatchsService.updateGoals(Number(id), homeTeamGoals, awayTeamGoals);
+
+  return res.status(StatusCode.OK).json({ message: 'Resource updated successfully' });
+};
+
 export default {
   getAll,
   createInProgressMatch,
   updateMatch,
+  updateGoals,
 };

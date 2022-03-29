@@ -48,7 +48,30 @@ const getHomeLeaderboard = async () => {
   return leaderboard;
 };
 
+const getAwayLeaderboardValues = async (clubId: number, clubName: string) => {
+  const allMatchsOfClub = await Matchs.findAll({ where: { awayTeam: clubId, inProgress: 0 } });
+
+  const awayLeaderboardValues = getAllLeaderboardValues(allMatchsOfClub, clubId, clubName);
+
+  return awayLeaderboardValues;
+};
+
+const getAwayLeaderboard = async () => {
+  const allClubs = await Clubs.findAll();
+
+  const leaderboard = await Promise.all(allClubs.map(async (club) => {
+    const classification = await getAwayLeaderboardValues(club.id, club.clubName);
+
+    return classification;
+  }));
+
+  orderArray(leaderboard);
+
+  return leaderboard;
+};
+
 export default {
   getLeaderboard,
   getHomeLeaderboard,
+  getAwayLeaderboard,
 };

@@ -14,7 +14,14 @@ const getHomeLeaderboard = async (_req: Request, res: Response) => {
   return res.status(StatusCode.OK).json(response);
 };
 
+const getAwayLeaderboard = async (_req: Request, res: Response) => {
+  const response = await LeaderboardService.getAwayLeaderboard();
+
+  return res.status(StatusCode.OK).json(response);
+};
+
 export default {
   getLeaderboard,
   getHomeLeaderboard,
+  getAwayLeaderboard,
 };

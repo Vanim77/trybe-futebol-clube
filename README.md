@@ -76,7 +76,7 @@ module.exports = {
 
 ---
 
-### Banco de dados da aplicação
+### Banco de dados da aplicação :classical_building:
 
 O banco de dados possui 3 tabelas:
   - Users
@@ -93,7 +93,7 @@ Para iniciar sem o Docker, entre na pasta `frontend` e `backend` e execute o com
 
 Abra o navegador na URL `localhost:3000`
 
-Navegue dentro da aplicação! ⚽️
+Navegue dentro da aplicação!
 
 ### Iniciando a aplicação com Docker :package:
 
@@ -103,6 +103,8 @@ Para aplicação com Docker, utilize os comandos na pasta raíz:
   * `npm run compose:down` para excluir o container
 
 Abra o navegador na URL `localhost:3000`
+
+Navegue dentro da aplicação!
 
 ---
 

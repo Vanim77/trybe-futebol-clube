@@ -4,6 +4,14 @@ Este projeto é um `CRUD` de partidas de futebol utilizando `ORM`, aplicando pri
 
 ---
 
+### Partes desenvolvidas na aplicação
+
+⚠️ Todo o Back-end da aplicação foi desenvolvido por mim
+
+⚠️ Todo o Front-end provido na aplicação, foi feito pelo time da [Trybe](https://www.betrybe.com)
+
+---
+
 ## Tecnologias usadas :computer:
 
   * Node.js

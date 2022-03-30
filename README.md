@@ -60,20 +60,11 @@ module.exports = {
 };
 ```
 
-#### Chave JWT e criptografia de senhas:
+#### Chave JWT e criptografia de senhas :old_key:
 
 ⚠️ A chave `JWT` está inserida em `app/backend/jwt.evaluation.key` e foi carregada no backend com o uso da biblioteca `fs` apenas para exercitar, por medidas de segurança, não use uma chave `JWT` em um arquivo exposto.
 
 ⚠️ A biblioteca utilizada para criptografar a senha no banco de dados é a [bcryptjs](https://www.npmjs.com/package/bcryptjs).
-
----
-
-### Dicas de comandos da aplicação
-
-Para aplicação com Docker, utilize os comandos na pasta raíz:
-
-  * `npm run compose:up` para subir a aplicação
-  * `npm run compose:down` para excluir o container
 
 ---
 
@@ -96,13 +87,24 @@ O banco de dados possui 3 tabelas:
 
 ---
 
-### Iniciando a aplicação
+### Iniciando a aplicação no terminal :desktop_computer: :computer_mouse:
 
 Para iniciar sem o Docker, entre na pasta `frontend` e `backend` e execute o comando `npm start`.
 
 Abra o navegador na URL `localhost:3000`
 
 Navegue dentro da aplicação! ⚽️
+
+### Iniciando a aplicação com Docker :package:
+
+Para aplicação com Docker, utilize os comandos na pasta raíz:
+
+  * `npm run compose:up` para subir a aplicação
+  * `npm run compose:down` para excluir o container
+
+Abra o navegador na URL `localhost:3000`
+
+---
 
 ![Exemplo da aplicação](./front-example.png)
 

@@ -4,7 +4,7 @@ Este projeto é um `CRUD` de partidas de futebol utilizando `ORM`, aplicando pri
 
 ---
 
-### Partes desenvolvidas na aplicação
+### Partes desenvolvidas na aplicação :hammer:
 
 ⚠️ Todo o Back-end da aplicação foi desenvolvido por mim
 
